@@ -5,7 +5,15 @@ import {
 } from '@nestjs/common';
 
 import * as bcrypt from 'bcrypt';
-import { catchError, from, map, Observable, switchMap, throwError } from 'rxjs';
+import {
+  catchError,
+  from,
+  map,
+  Observable,
+  of,
+  switchMap,
+  throwError,
+} from 'rxjs';
 import { CreateUser } from '../models/dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../models/user.entity';
@@ -13,6 +21,8 @@ import { Repository } from 'typeorm';
 import { LoginUser } from '../models/dto/login-user.dto';
 import { User } from '../models/dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UpdateUser } from '../models/dto/update-user.dto';
+import { emit } from 'process';
 
 @Injectable()
 export class AuthService {
@@ -91,6 +101,90 @@ export class AuthService {
           throw new BadRequestException('Password salah');
         }),
       ),
+    );
+  }
+
+  // updateUser(user: UpdateUser, id: string): Observable<{ message: string }> {
+  //   return from(this.userRepository.update(id, user)).pipe(
+  //     map(() => {
+  //       return {
+  //         message: 'Berhasil Update',
+  //       };
+  //     }),
+  //     catchError((err) => {
+  //       throw new BadRequestException('Something wrong Happened');
+  //     }),
+  //   );
+  // }
+
+  findUserById(id: string): Observable<User> {
+    return from(this.userRepository.findOneBy({ id })).pipe(
+      switchMap((user) => {
+        if (!user) {
+          throw new NotFoundException('User not found');
+        }
+        return of(user);
+      }),
+      catchError((error) => {
+        if (error instanceof NotFoundException) {
+          throw error; // Re-throw NotFoundException for component handling
+        } else {
+          console.error('Unexpected error:', error);
+          return of(null); // Or throw a generic error as needed
+        }
+      }),
+    );
+  }
+
+  updateUser(
+    user: UpdateUser,
+    id: string,
+  ): Observable<{ message: string; user: User }> {
+    return from(this.findUserById(user.id)).pipe(
+      switchMap((existUser: User) => {
+        const payload = { ...existUser, ...user };
+        return from(this.userRepository.update(id, payload)).pipe(
+          map(() => {
+            return {
+              message: 'Berhasil Update',
+              user: payload,
+            };
+          }),
+          catchError((err) => {
+            throw new BadRequestException('Something Wrong Happened');
+          }),
+        );
+      }),
+    );
+  }
+
+  konfirmasiPassword(
+    email: string,
+    password: string,
+  ): Observable<{ message: boolean }> {
+    return from(
+      this.userRepository.findOne({
+        where: { email },
+        select: ['password', 'email', 'username', 'role'],
+      }),
+    ).pipe(
+      switchMap((user: User) => {
+        if (user) {
+          return from(bcrypt.compare(password, user.password)).pipe(
+            map((isValid: boolean) => {
+              if (isValid) {
+                return {
+                  message: true,
+                };
+              } else {
+                throw new BadRequestException('Password salah');
+              }
+            }),
+          );
+        } else {
+          throw new NotFoundException('Akun tidak ada');
+        }
+      }),
     );
   }
 }

@@ -1,9 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { CreateUser } from '../models/dto/create-user.dto';
 import { map, Observable } from 'rxjs';
 import { LoginUser } from '../models/dto/login-user.dto';
 import { User } from '../models/dto/user.dto';
+import { UpdateUser } from '../models/dto/update-user.dto';
+import { KonfirmasiPw } from '../models/dto/konfirmasi-pw.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,5 +21,17 @@ export class AuthController {
     @Body() user: LoginUser,
   ): Observable<{ token: string; user: User }> {
     return this.authService.loginUser(user);
+  }
+
+  @Put('update')
+  updateUser(@Body() user: UpdateUser): Observable<{ message: string }> {
+    return this.authService.updateUser(user, user.id);
+  }
+
+  @Post('konfirmasi')
+  konfirmasiPassword(
+    @Body() data: KonfirmasiPw,
+  ): Observable<{ message: boolean }> {
+    return this.authService.konfirmasiPassword(data.email, data.password);
   }
 }
