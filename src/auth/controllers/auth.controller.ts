@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { CreateUser } from '../models/dto/create-user.dto';
 import { map, Observable } from 'rxjs';
@@ -6,6 +6,7 @@ import { LoginUser } from '../models/dto/login-user.dto';
 import { User } from '../models/dto/user.dto';
 import { UpdateUser } from '../models/dto/update-user.dto';
 import { KonfirmasiPw } from '../models/dto/konfirmasi-pw.dto';
+import { DeleteUser } from '../models/dto/delete-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -33,5 +34,10 @@ export class AuthController {
     @Body() data: KonfirmasiPw,
   ): Observable<{ message: boolean }> {
     return this.authService.konfirmasiPassword(data.email, data.password);
+  }
+
+  @Delete('delete')
+  deleteUser(@Body() user: DeleteUser): Observable<{ message: string }> {
+    return this.authService.deleteUser(user);
   }
 }

@@ -23,6 +23,7 @@ import { User } from '../models/dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UpdateUser } from '../models/dto/update-user.dto';
 import { emit } from 'process';
+import { DeleteUser } from '../models/dto/delete-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -94,13 +95,10 @@ export class AuthService {
               };
             }),
           );
+        } else {
+          throw new NotFoundException('Password salah');
         }
       }),
-      catchError((err) =>
-        throwError(() => {
-          throw new BadRequestException('Password salah');
-        }),
-      ),
     );
   }
 
@@ -176,6 +174,33 @@ export class AuthService {
                 return {
                   message: true,
                 };
+              } else {
+                throw new BadRequestException('Password salah');
+              }
+            }),
+          );
+        } else {
+          throw new NotFoundException('Akun tidak ada');
+        }
+      }),
+    );
+  }
+
+  deleteUser(user: DeleteUser): Observable<{ message: string }> {
+    return from(
+      this.userRepository.findOne({
+        where: { email: user.email },
+        select: ['email', 'password', 'username', 'role', 'id'],
+      }),
+    ).pipe(
+      switchMap((existUser: User) => {
+        if (existUser) {
+          return from(bcrypt.compare(user.password, existUser.password)).pipe(
+            switchMap((isValid) => {
+              if (isValid) {
+                return from(
+                  this.userRepository.delete({ id: existUser.id }),
+                ).pipe(map(() => ({ message: 'Berhasil Menghapus akun' })));
               } else {
                 throw new BadRequestException('Password salah');
               }
