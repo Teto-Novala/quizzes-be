@@ -1,6 +1,13 @@
-import { Column, Entity, Generated, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Generated,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ModelSoal } from './enums/model.enum';
 import { Jawaban } from './enums/jawaban.enum';
+import { TutorEntity } from 'src/auth/models/tutor.entity';
 
 @Entity('soal')
 export class SoalEntity {
@@ -10,7 +17,10 @@ export class SoalEntity {
   @Column({ type: 'enum', enum: ModelSoal, default: ModelSoal.SATU })
   model: ModelSoal;
 
-  @Generated('increment')
+  @Column()
+  subject: string;
+
+  @Column({ type: 'int4', generated: 'increment' })
   no: number;
 
   @Column()
@@ -30,4 +40,7 @@ export class SoalEntity {
 
   @Column({ type: 'enum', enum: Jawaban })
   jawaban: Jawaban;
+
+  @ManyToOne(() => TutorEntity, (tutorEntity) => tutorEntity.soal)
+  author: TutorEntity;
 }

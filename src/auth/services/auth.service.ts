@@ -16,7 +16,6 @@ import {
 } from 'rxjs';
 import { CreateUser } from '../models/dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../models/user.entity';
 import { Repository } from 'typeorm';
 import { LoginUser } from '../models/dto/login-user.dto';
 import { User } from '../models/dto/user.dto';
@@ -24,12 +23,13 @@ import { JwtService } from '@nestjs/jwt';
 import { UpdateUser } from '../models/dto/update-user.dto';
 import { emit } from 'process';
 import { DeleteUser } from '../models/dto/delete-user.dto';
+import { TutorEntity } from '../models/tutor.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(TutorEntity)
+    private readonly userRepository: Repository<TutorEntity>,
     private JwtService: JwtService,
   ) {}
 
@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   registerUser(user: CreateUser): Observable<CreateUser> {
-    const { username, email, password } = user;
+    const { username, email, password, subject } = user;
 
     return this.hashPassword(password).pipe(
       switchMap((hashPw: string) => {
@@ -47,6 +47,7 @@ export class AuthService {
             username,
             email,
             password: hashPw,
+            subject,
           }),
         ).pipe(
           map((user: CreateUser) => {
@@ -62,7 +63,7 @@ export class AuthService {
     return from(
       this.userRepository.findOne({
         where: { email },
-        select: ['id', 'username', 'email', 'password', 'role'],
+        select: ['id', 'username', 'email', 'password', 'role', 'subject'],
       }),
     ).pipe(
       switchMap((user: User) =>
