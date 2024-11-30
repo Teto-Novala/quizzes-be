@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -27,8 +28,14 @@ export class SoalController {
   }
 
   @UseGuards(JwtGuard)
-  @Get()
+  @Post('get')
   getSoalByModel(@Body() data: GetSoalByModel): Observable<Soal[]> {
     return this.soalService.getSoalByModel(data);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':id')
+  getSoalById(@Param('id') id: string): Observable<Soal> {
+    return this.soalService.getSoalById(id);
   }
 }

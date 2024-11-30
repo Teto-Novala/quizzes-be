@@ -41,4 +41,20 @@ export class SoalService {
       }),
     );
   }
+
+  getSoalById(id: string): Observable<Soal> {
+    return from(
+      this.soalRepository.findOne({
+        where: { id },
+      }),
+    ).pipe(
+      map((soal: Soal) => {
+        if (soal) {
+          return soal;
+        } else {
+          throw new NotFoundException('Soal tidak ditemukan');
+        }
+      }),
+    );
+  }
 }
