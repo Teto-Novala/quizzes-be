@@ -2,11 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SoalEntity } from '../models/soal.entity';
 import { Repository } from 'typeorm';
-import { from, map, Observable } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { CreateSoal } from '../models/dto/create-soal.dto';
 import { User } from 'src/auth/models/dto/user.dto';
 import { Soal } from '../models/dto/soal.dto';
 import { GetSoalByModel } from '../models/dto/get-soal-by-model.dto';
+import { UpdateSoal } from '../models/dto/update-soal.dto';
 
 @Injectable()
 export class SoalService {
@@ -53,6 +54,22 @@ export class SoalService {
           return soal;
         } else {
           throw new NotFoundException('Soal tidak ditemukan');
+        }
+      }),
+    );
+  }
+
+  updateSoal(data: UpdateSoal): Observable<{ message: string }> {
+    return from(this.soalRepository.findOneBy({ id: data.id })).pipe(
+      switchMap((soal: Soal) => {
+        if (soal) {
+          return from(this.soalRepository.update(data.id, data)).pipe(
+            map(() => {
+              return {
+                message: 'Berhasil Update',
+              };
+            }),
+          );
         }
       }),
     );

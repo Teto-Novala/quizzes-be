@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { CreateSoal } from '../models/dto/create-soal.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { Soal } from '../models/dto/soal.dto';
 import { GetSoalByModel } from '../models/dto/get-soal-by-model.dto';
+import { UpdateSoal } from '../models/dto/update-soal.dto';
 
 @Controller('soal')
 export class SoalController {
@@ -37,5 +39,11 @@ export class SoalController {
   @Get(':id')
   getSoalById(@Param('id') id: string): Observable<Soal> {
     return this.soalService.getSoalById(id);
+  }
+
+  @UseGuards(JwtGuard)
+  @Put('update')
+  updateSoal(@Body() data: UpdateSoal): Observable<{ message: string }> {
+    return this.soalService.updateSoal(data);
   }
 }
