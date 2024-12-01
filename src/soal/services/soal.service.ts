@@ -13,6 +13,8 @@ import { Soal } from '../models/dto/soal.dto';
 import { GetSoalByModel } from '../models/dto/get-soal-by-model.dto';
 import { UpdateSoal } from '../models/dto/update-soal.dto';
 import { DeleteSoal } from '../models/dto/delete-soal.dto';
+import { GetSoalRandomModel } from '../models/dto/get-soal-random-model.dto';
+import { ModelSoal } from '../models/enums/model.enum';
 
 @Injectable()
 export class SoalService {
@@ -89,6 +91,48 @@ export class SoalService {
         return {
           message: 'Berhasil menghapus',
         };
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something wrong happened');
+      }),
+    );
+  }
+
+  getRandomNumberWordBetween1And3(): ModelSoal {
+    const randomNumber = Math.floor(Math.random() * 3) + 1;
+
+    switch (randomNumber) {
+      case 1:
+        return ModelSoal.SATU;
+      case 2:
+        return ModelSoal.DUA;
+      case 3:
+        return ModelSoal.TIGA;
+      default:
+        return ModelSoal.SATU;
+    }
+  }
+
+  getSoalRandomModel(data: GetSoalRandomModel): Observable<Soal[]> {
+    const randomNumber = this.getRandomNumberWordBetween1And3();
+    return from(
+      this.soalRepository.find({
+        where: { model: randomNumber, subject: data.subject },
+        select: [
+          'id',
+          'soal',
+          'pilihanA',
+          'pilihanB',
+          'pilihanC',
+          'pilihanD',
+          'subject',
+        ],
+      }),
+    ).pipe(
+      map((soal: Soal[]) => {
+        if (soal) {
+          return soal;
+        }
       }),
       catchError((err) => {
         throw new BadRequestException('Something wrong happened');

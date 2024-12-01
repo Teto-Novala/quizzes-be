@@ -3,7 +3,7 @@ import { Role } from './enums/role.enum';
 import { SubjectEnum } from './enums/subject.enum';
 import { SoalEntity } from 'src/soal/models/soal.entity';
 
-@Entity('tutor')
+@Entity('user')
 export class TutorEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -17,7 +17,7 @@ export class TutorEntity {
   @Column({ select: false })
   password: string;
 
-  @Column({ type: 'enum', enum: SubjectEnum, default: SubjectEnum.MTK })
+  @Column({ type: 'enum', enum: SubjectEnum, default: SubjectEnum.Null })
   subject: SubjectEnum;
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })

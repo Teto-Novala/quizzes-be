@@ -4,19 +4,19 @@ import { ModelSoal } from '../enums/model.enum';
 export class Soal {
   id?: string;
 
-  model: ModelSoal;
+  model?: ModelSoal;
 
   no?: number;
 
-  soal: string;
+  soal?: string;
 
-  pilihanA: string;
+  pilihanA?: string;
 
-  pilihanB: string;
+  pilihanB?: string;
 
-  pilihanC: string;
+  pilihanC?: string;
 
-  pilihanD: string;
+  pilihanD?: string;
 
-  jawaban: Jawaban;
+  jawaban?: Jawaban;
 }

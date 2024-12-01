@@ -17,6 +17,7 @@ import { Soal } from '../models/dto/soal.dto';
 import { GetSoalByModel } from '../models/dto/get-soal-by-model.dto';
 import { UpdateSoal } from '../models/dto/update-soal.dto';
 import { DeleteSoal } from '../models/dto/delete-soal.dto';
+import { GetSoalRandomModel } from '../models/dto/get-soal-random-model.dto';
 
 @Controller('soal')
 export class SoalController {
@@ -53,5 +54,10 @@ export class SoalController {
   @Delete(':id')
   deleteSoal(@Param('id') id: string): Observable<{ message: string }> {
     return this.soalService.deleteSoal(id);
+  }
+
+  @Post('random')
+  getSoalRandomModel(@Body() data: GetSoalRandomModel): Observable<Soal[]> {
+    return this.soalService.getSoalRandomModel(data);
   }
 }
