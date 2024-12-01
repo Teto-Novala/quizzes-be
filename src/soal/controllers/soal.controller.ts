@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -15,6 +16,7 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { Soal } from '../models/dto/soal.dto';
 import { GetSoalByModel } from '../models/dto/get-soal-by-model.dto';
 import { UpdateSoal } from '../models/dto/update-soal.dto';
+import { DeleteSoal } from '../models/dto/delete-soal.dto';
 
 @Controller('soal')
 export class SoalController {
@@ -45,5 +47,11 @@ export class SoalController {
   @Put('update')
   updateSoal(@Body() data: UpdateSoal): Observable<{ message: string }> {
     return this.soalService.updateSoal(data);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':id')
+  deleteSoal(@Param('id') id: string): Observable<{ message: string }> {
+    return this.soalService.deleteSoal(id);
   }
 }

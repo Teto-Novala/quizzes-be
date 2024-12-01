@@ -1,13 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SoalEntity } from '../models/soal.entity';
 import { Repository } from 'typeorm';
-import { from, map, Observable, switchMap } from 'rxjs';
+import { catchError, from, map, Observable, switchMap } from 'rxjs';
 import { CreateSoal } from '../models/dto/create-soal.dto';
 import { User } from 'src/auth/models/dto/user.dto';
 import { Soal } from '../models/dto/soal.dto';
 import { GetSoalByModel } from '../models/dto/get-soal-by-model.dto';
 import { UpdateSoal } from '../models/dto/update-soal.dto';
+import { DeleteSoal } from '../models/dto/delete-soal.dto';
 
 @Injectable()
 export class SoalService {
@@ -71,6 +76,22 @@ export class SoalService {
             }),
           );
         }
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something wrong happened');
+      }),
+    );
+  }
+
+  deleteSoal(id: string): Observable<{ message: string }> {
+    return from(this.soalRepository.delete(id)).pipe(
+      map(() => {
+        return {
+          message: 'Berhasil menghapus',
+        };
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something wrong happened');
       }),
     );
   }
