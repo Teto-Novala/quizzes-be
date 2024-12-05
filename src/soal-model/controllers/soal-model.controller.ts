@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { SoalModelService } from '../services/soal-model.service';
 import { CreateSoalModel } from '../models/dto/create/create-soal-model.dto';
 import { Observable } from 'rxjs';
@@ -15,5 +23,11 @@ export class SoalModelController {
     @Request() req,
   ): Observable<{ message: string }> {
     return this.soalModelService.createModel(req.user, createDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete(':id')
+  deleteModel(@Param('id') id: string): Observable<{ message: string }> {
+    return this.soalModelService.deleteModel(id);
   }
 }
