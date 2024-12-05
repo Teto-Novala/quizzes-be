@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SoalModelEntity } from '../models/soalModel.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +10,7 @@ import { CreateSoalModel } from '../models/dto/create/create-soal-model.dto';
 import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
 import { SoalModel } from '../models/dto/soalModel.dto';
 import { User } from 'src/auth/models/dto/user.dto';
+import { UpdateSoalModel } from '../models/dto/update/update-soal-model.dto';
 
 @Injectable()
 export class SoalModelService {
@@ -67,6 +72,31 @@ export class SoalModelService {
         return {
           message: 'Berhasil Menghapus',
         };
+      }),
+      catchError((err) => {
+        throw new InternalServerErrorException();
+      }),
+    );
+  }
+
+  updateModel(updateDto: UpdateSoalModel): Observable<{ message: string }> {
+    return from(this.soalModelRepository.findOneBy({ id: updateDto.id })).pipe(
+      switchMap((soalModel: SoalModel) => {
+        if (!soalModel) {
+          throw new NotFoundException('Model tidak ditemukan');
+        }
+
+        return from(
+          this.soalModelRepository.update(updateDto.id, {
+            namaModel: updateDto.namaModel,
+          }),
+        ).pipe(
+          map(() => {
+            return {
+              message: 'Berhasil Mengupdate',
+            };
+          }),
+        );
       }),
       catchError((err) => {
         throw new InternalServerErrorException();
