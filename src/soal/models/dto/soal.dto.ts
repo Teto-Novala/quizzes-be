@@ -1,10 +1,7 @@
 import { Jawaban } from '../enums/jawaban.enum';
-import { ModelSoal } from '../enums/model.enum';
 
 export class Soal {
   id?: string;
-
-  model?: ModelSoal;
 
   no?: number;
 

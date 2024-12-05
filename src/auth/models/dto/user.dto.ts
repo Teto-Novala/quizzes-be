@@ -1,6 +1,7 @@
 import { Soal } from 'src/soal/models/dto/soal.dto';
 import { Role } from '../enums/role.enum';
 import { SubjectEnum } from '../enums/subject.enum';
+import { SoalModel } from 'src/soal-model/models/dto/soalModel.dto';
 
 export class User {
   id?: string;
@@ -13,4 +14,5 @@ export class User {
   password?: string;
   role?: Role;
   soal?: Soal[];
+  model?: SoalModel[];
 }

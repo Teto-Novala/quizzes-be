@@ -5,7 +5,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ModelSoal } from './enums/model.enum';
 import { Jawaban } from './enums/jawaban.enum';
 import { TutorEntity } from 'src/auth/models/tutor.entity';
 
@@ -13,9 +12,6 @@ import { TutorEntity } from 'src/auth/models/tutor.entity';
 export class SoalEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({ type: 'enum', enum: ModelSoal, default: ModelSoal.SATU })
-  model: ModelSoal;
 
   @Column()
   subject: string;
