@@ -1,9 +1,9 @@
+import { SoalModelEntity } from 'src/soal-model/models/soalModel.entity';
 import { Jawaban } from '../enums/jawaban.enum';
+import { SoalModel } from 'src/soal-model/models/dto/soalModel.dto';
 
 export class Soal {
   id?: string;
-
-  no?: number;
 
   soal?: string;
 
@@ -16,4 +16,6 @@ export class Soal {
   pilihanD?: string;
 
   jawaban?: Jawaban;
+
+  model?: SoalModel;
 }

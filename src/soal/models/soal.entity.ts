@@ -2,11 +2,13 @@ import {
   Column,
   Entity,
   Generated,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Jawaban } from './enums/jawaban.enum';
 import { TutorEntity } from 'src/auth/models/tutor.entity';
+import { SoalModelEntity } from 'src/soal-model/models/soalModel.entity';
 
 @Entity('soal')
 export class SoalEntity {
@@ -15,9 +17,6 @@ export class SoalEntity {
 
   @Column()
   subject: string;
-
-  @Column({ type: 'int4', generated: 'increment' })
-  no: number;
 
   @Column()
   soal: string;
@@ -39,4 +38,10 @@ export class SoalEntity {
 
   @ManyToOne(() => TutorEntity, (tutorEntity) => tutorEntity.soal)
   author: TutorEntity;
+
+  @ManyToOne(() => SoalModelEntity, (soalModelEntity) => soalModelEntity.soal)
+  model: SoalModelEntity;
+
+  @Column({ type: 'int' })
+  noModel: number;
 }

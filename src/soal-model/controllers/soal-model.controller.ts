@@ -35,7 +35,9 @@ export class SoalModelController {
 
   @UseGuards(JwtGuard)
   @Put('update')
-  updateSoalModel(@Body() updateDto: UpdateSoalModel): Observable<{ message: string }> {
+  updateSoalModel(
+    @Body() updateDto: UpdateSoalModel,
+  ): Observable<{ message: string }> {
     return this.soalModelService.updateModel(updateDto);
   }
 }

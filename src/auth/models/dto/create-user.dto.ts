@@ -1,6 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Role } from '../enums/role.enum';
-import { SubjectEnum } from '../enums/subject.enum';
 
 export class CreateUser {
   id?: string;
@@ -15,7 +14,7 @@ export class CreateUser {
   @IsNotEmpty({ message: 'Passwor tidak boleh kosong' })
   password: string;
 
-  subject?: SubjectEnum;
+  subject?: string;
 
   role?: Role;
 }

@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   registerUser(user: CreateUser): Observable<CreateUser> {
-    const { username, email, password, subject } = user;
+    const { username, email, password, subject = '' } = user;
 
     return this.hashPassword(password).pipe(
       switchMap((hashPw: string) => {
