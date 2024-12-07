@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -100,6 +101,33 @@ export class SoalModelService {
       }),
       catchError((err) => {
         throw new InternalServerErrorException();
+      }),
+    );
+  }
+
+  getAllModelById(id: string): Observable<SoalModel[]> {
+    return from(
+      this.soalModelRepository.find({
+        where: { author: { id: id } },
+        order: { id: 'ASC' },
+      }),
+    ).pipe(
+      map((soalModel: SoalModel[]) => {
+        return soalModel;
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something went wrong');
+      }),
+    );
+  }
+
+  getModelById(id: string): Observable<SoalModel> {
+    return from(this.soalModelRepository.findOneBy({ id })).pipe(
+      map((soalModel: SoalModel) => {
+        return soalModel;
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something went wrong');
       }),
     );
   }
