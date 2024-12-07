@@ -117,7 +117,21 @@ export class AuthService {
   // }
 
   findUserById(id: string): Observable<User> {
-    return from(this.userRepository.findOneBy({ id })).pipe(
+    return from(
+      this.userRepository.findOne({
+        where: { id },
+        select: [
+          'id',
+          'email',
+          'model',
+          'password',
+          'role',
+          'soal',
+          'subject',
+          'username',
+        ],
+      }),
+    ).pipe(
       switchMap((user) => {
         if (!user) {
           throw new NotFoundException('User not found');
@@ -135,55 +149,74 @@ export class AuthService {
     );
   }
 
-  updateUser(
-    user: UpdateUser,
-    id: string,
-  ): Observable<{ message: string; user: User }> {
+  // updateUser(
+  //   user: UpdateUser,
+  //   id: string,
+  // ): Observable<{ message: string; user: User }> {
+  //   return from(this.findUserById(user.id)).pipe(
+  //     switchMap((existUser: User) => {
+  //       from(bcrypt.compare(user.password, existUser.password)).pipe(
+  //         map((isValid: boolean) => {
+  //           if (isValid) {
+  //             const payload = { ...existUser, ...user };
+  //             return from(this.userRepository.update(id, payload)).pipe(
+  //               map(() => {
+  //                 return {
+  //                   message: 'Berhasil Update',
+  //                   user: payload,
+  //                 };
+  //               }),
+  //               catchError((err) => {
+  //                 throw new BadRequestException('Something Wrong Happened');
+  //               }),
+  //             );
+  //           } else {
+  //             throw new BadRequestException('Invalid password');
+  //           }
+  //         }),
+  //       );
+  //     }),
+  //     catchError((err) => {
+  //       throw new BadRequestException('Something Wrong Happened');
+  //     }),
+  //   );
+  // }
+
+  updateUser(user: UpdateUser): Observable<{ message: string; user: User }> {
     return from(this.findUserById(user.id)).pipe(
       switchMap((existUser: User) => {
-        const payload = { ...existUser, ...user };
-        return from(this.userRepository.update(id, payload)).pipe(
-          map(() => {
-            return {
-              message: 'Berhasil Update',
-              user: payload,
-            };
+        return from(bcrypt.compare(user.password, existUser.password)).pipe(
+          switchMap((isValid: boolean) => {
+            if (isValid) {
+              const payload = { ...existUser, ...user };
+              return from(this.hashPassword(payload.password)).pipe(
+                switchMap((hashPw: string) => {
+                  payload.password = hashPw;
+                  return from(
+                    this.userRepository.update(user.id, payload),
+                  ).pipe(
+                    map(() => {
+                      delete payload.password;
+                      return {
+                        message: 'Berhasil Update',
+                        user: payload,
+                      };
+                    }),
+                  );
+                }),
+              );
+            } else {
+              throw new BadRequestException('Password salah');
+            }
           }),
-          catchError((err) => {
-            throw new BadRequestException('Something Wrong Happened');
-          }),
+          // catchError((err) => {
+          //   throw new BadRequestException('Password salah');
+          // }),
         );
       }),
-    );
-  }
-
-  konfirmasiPassword(
-    email: string,
-    password: string,
-  ): Observable<{ message: boolean }> {
-    return from(
-      this.userRepository.findOne({
-        where: { email },
-        select: ['password', 'email', 'username', 'role'],
-      }),
-    ).pipe(
-      switchMap((user: User) => {
-        if (user) {
-          return from(bcrypt.compare(password, user.password)).pipe(
-            map((isValid: boolean) => {
-              if (isValid) {
-                return {
-                  message: true,
-                };
-              } else {
-                throw new BadRequestException('Password salah');
-              }
-            }),
-          );
-        } else {
-          throw new NotFoundException('Akun tidak ada');
-        }
-      }),
+      // catchError((err) => {
+      //   throw new BadRequestException('Something went wrong');
+      // }),
     );
   }
 

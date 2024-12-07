@@ -26,14 +26,7 @@ export class AuthController {
 
   @Put('update')
   updateUser(@Body() user: UpdateUser): Observable<{ message: string }> {
-    return this.authService.updateUser(user, user.id);
-  }
-
-  @Post('konfirmasi')
-  konfirmasiPassword(
-    @Body() data: KonfirmasiPw,
-  ): Observable<{ message: boolean }> {
-    return this.authService.konfirmasiPassword(data.email, data.password);
+    return this.authService.updateUser(user);
   }
 
   @Delete('delete')
