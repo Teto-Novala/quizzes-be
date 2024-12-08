@@ -1,4 +1,4 @@
-export class Subject {
+export class SubjectDto {
   id?: string;
   nama?: string;
 }
