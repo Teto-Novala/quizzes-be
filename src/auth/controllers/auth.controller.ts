@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { CreateUser } from '../models/dto/create-user.dto';
 import { map, Observable } from 'rxjs';
@@ -7,6 +16,8 @@ import { User } from '../models/dto/user.dto';
 import { UpdateUser } from '../models/dto/update-user.dto';
 import { KonfirmasiPw } from '../models/dto/konfirmasi-pw.dto';
 import { DeleteUser } from '../models/dto/delete-user.dto';
+import { JwtGuard } from '../guards/jwt.guard';
+import { UpdateRoleSubjectUserDto } from '../models/dto/update-role-subject.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -32,5 +43,25 @@ export class AuthController {
   @Delete('delete')
   deleteUser(@Body() user: DeleteUser): Observable<{ message: string }> {
     return this.authService.deleteUser(user);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get()
+  getAllUser(): Observable<User[]> {
+    return this.authService.getAllUser();
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':id')
+  getUserById(@Param('id') id: string): Observable<User> {
+    return this.authService.getUserById(id);
+  }
+
+  @UseGuards(JwtGuard)
+  @Put('update/role')
+  updateRoleSubjectUser(
+    @Body() updateDto: UpdateRoleSubjectUserDto,
+  ): Observable<{ message: string }> {
+    return this.authService.editUserRoleSubject(updateDto, updateDto.id);
   }
 }

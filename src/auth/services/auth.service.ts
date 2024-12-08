@@ -16,7 +16,7 @@ import {
 } from 'rxjs';
 import { CreateUser } from '../models/dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { LoginUser } from '../models/dto/login-user.dto';
 import { User } from '../models/dto/user.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -24,6 +24,8 @@ import { UpdateUser } from '../models/dto/update-user.dto';
 import { emit } from 'process';
 import { DeleteUser } from '../models/dto/delete-user.dto';
 import { TutorEntity } from '../models/tutor.entity';
+import { Role } from '../models/enums/role.enum';
+import { UpdateRoleSubjectUserDto } from '../models/dto/update-role-subject.dto';
 
 @Injectable()
 export class AuthService {
@@ -243,6 +245,46 @@ export class AuthService {
         } else {
           throw new NotFoundException('Akun tidak ada');
         }
+      }),
+    );
+  }
+
+  getAllUser(): Observable<User[]> {
+    return from(
+      this.userRepository.find({ where: { role: Not(Role.ADMIN) } }),
+    ).pipe(
+      map((user: User[]) => {
+        return user;
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something wrong happened');
+      }),
+    );
+  }
+
+  getUserById(id: string): Observable<User> {
+    return from(this.userRepository.findOneBy({ id })).pipe(
+      map((user: User) => {
+        return user;
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something went wrong');
+      }),
+    );
+  }
+
+  editUserRoleSubject(
+    updateDto: UpdateRoleSubjectUserDto,
+    id: string,
+  ): Observable<{ message: string }> {
+    return from(this.userRepository.update(id, updateDto)).pipe(
+      map(() => {
+        return {
+          message: 'Berhasil Update',
+        };
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something went wrong');
       }),
     );
   }
