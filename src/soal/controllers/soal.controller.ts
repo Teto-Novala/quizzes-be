@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Request,
@@ -26,6 +27,16 @@ export class SoalController {
     @Param('idModel') idModel: string,
   ): Observable<Soal[]> {
     return this.soalService.getSoalByModel(idUser, idModel);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':idUser/:idModel/:noModel')
+  getAllSoalByModel(
+    @Param('idUser') idUser: string,
+    @Param('idModel') idModel: string,
+    @Param('noModel', ParseIntPipe) noModel: number,
+  ): Observable<Soal[]> {
+    return this.soalService.getAllSoalByModel(idUser, idModel, noModel);
   }
 
   @UseGuards(JwtGuard)
