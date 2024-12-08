@@ -13,6 +13,7 @@ import { Soal } from '../models/dto/soal.dto';
 import { CreateSoal } from '../models/dto/create/create-soal.dto';
 import { SoalModelEntity } from 'src/soal-model/models/soalModel.entity';
 import { SoalModel } from 'src/soal-model/models/dto/soalModel.dto';
+import { UpdateSoal } from '../models/dto/update/edit-soal.dto';
 
 @Injectable()
 export class SoalService {
@@ -41,25 +42,17 @@ export class SoalService {
     );
   }
 
-  getAllSoalByModel(
-    idUser: string,
-    idModel: string,
-    noModel: number,
-  ): Observable<Soal[]> {
+  getSoalById(idSoal: string): Observable<Soal> {
     return from(
-      this.soalRepository.find({
-        where: {
-          author: { id: idUser },
-          model: { id: idModel },
-          noModel: noModel,
-        },
+      this.soalRepository.findOne({
+        where: { id: idSoal },
       }),
     ).pipe(
-      map((soal: Soal[]) => {
+      map((soal: Soal) => {
         return soal;
       }),
       catchError((err) => {
-        throw new BadRequestException('Something wrong happened');
+        throw new BadRequestException('Something went wrong');
       }),
     );
   }
@@ -88,6 +81,34 @@ export class SoalService {
             };
           }),
         );
+      }),
+    );
+  }
+
+  editSoal(updateSoalDto: UpdateSoal): Observable<{ message: string }> {
+    return from(
+      this.soalRepository.update(updateSoalDto.id, updateSoalDto),
+    ).pipe(
+      map(() => {
+        return {
+          message: 'Berhasil mengupdate',
+        };
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something wrong happened');
+      }),
+    );
+  }
+
+  deleteSoalById(id: string): Observable<{ message: string }> {
+    return from(this.soalRepository.delete(id)).pipe(
+      map(() => {
+        return {
+          message: 'Berhasil menghapus',
+        };
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Somethnig wrong happened');
       }),
     );
   }

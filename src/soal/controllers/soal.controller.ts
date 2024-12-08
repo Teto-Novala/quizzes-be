@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CreateSoal } from '../models/dto/create/create-soal.dto';
 import { Soal } from '../models/dto/soal.dto';
+import { UpdateSoal } from '../models/dto/update/edit-soal.dto';
 
 @Controller('soal')
 export class SoalController {
@@ -30,18 +32,26 @@ export class SoalController {
   }
 
   @UseGuards(JwtGuard)
-  @Get(':idUser/:idModel/:noModel')
-  getAllSoalByModel(
-    @Param('idUser') idUser: string,
-    @Param('idModel') idModel: string,
-    @Param('noModel', ParseIntPipe) noModel: number,
-  ): Observable<Soal[]> {
-    return this.soalService.getAllSoalByModel(idUser, idModel, noModel);
+  @Get(':idSoal')
+  getSoalById(@Param('idSoal') idSoal: string): Observable<Soal> {
+    return this.soalService.getSoalById(idSoal);
   }
 
   @UseGuards(JwtGuard)
   @Post('create')
   createSoal(@Body() createDto: CreateSoal, @Request() req) {
     return this.soalService.createSoal(req.user, createDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Put('update')
+  editSoal(@Body() updateSoalDto: UpdateSoal): Observable<{ message: string }> {
+    return this.soalService.editSoal(updateSoalDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete('delete/:id')
+  deleteSoalById(@Param('id') id: string): Observable<{ message: string }> {
+    return this.soalService.deleteSoalById(id);
   }
 }
