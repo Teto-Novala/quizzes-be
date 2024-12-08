@@ -13,10 +13,20 @@ import { SoalService } from '../services/soal.service';
 import { Observable } from 'rxjs';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CreateSoal } from '../models/dto/create/create-soal.dto';
+import { Soal } from '../models/dto/soal.dto';
 
 @Controller('soal')
 export class SoalController {
   constructor(private soalService: SoalService) {}
+
+  @UseGuards(JwtGuard)
+  @Get(':idUser/:idModel')
+  getSoalByModel(
+    @Param('idUser') idUser: string,
+    @Param('idModel') idModel: string,
+  ): Observable<Soal[]> {
+    return this.soalService.getSoalByModel(idUser, idModel);
+  }
 
   @UseGuards(JwtGuard)
   @Post('create')

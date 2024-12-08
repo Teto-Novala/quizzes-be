@@ -23,6 +23,24 @@ export class SoalService {
     private readonly soalModelRepository: Repository<SoalModelEntity>,
   ) {}
 
+  getSoalByModel(idUser: string, idModel: string): Observable<Soal[]> {
+    return from(
+      this.soalRepository.find({
+        where: {
+          author: { id: idUser },
+          model: { id: idModel },
+        },
+      }),
+    ).pipe(
+      map((soal: Soal[]) => {
+        return soal;
+      }),
+      catchError((err) => {
+        throw new BadRequestException('Something wrong happened');
+      }),
+    );
+  }
+
   createSoal(
     user: User,
     createDto: CreateSoal,
