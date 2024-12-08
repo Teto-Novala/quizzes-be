@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { SoalModule } from './soal/soal.module';
 import { SoalModelModule } from './soal-model/soal-model.module';
+import { SubjectModule } from './subject/subject.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SoalModelModule } from './soal-model/soal-model.module';
     AuthModule,
     SoalModule,
     SoalModelModule,
+    SubjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],
