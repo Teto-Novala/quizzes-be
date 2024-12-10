@@ -122,6 +122,9 @@ export class SoalService {
     ).pipe(
       switchMap((soalModel: SoalModel[]) => {
         const modelLength = soalModel.length;
+        if (modelLength === 0) {
+          throw new BadRequestException('Soal Belum Ada');
+        }
 
         const randomIndex = Math.floor(Math.random() * modelLength) + 1;
 
@@ -132,9 +135,7 @@ export class SoalService {
     );
   }
 
-  getRandomModelSoalInfo(
-    getRandomDto: GetRandomDto,
-  ): Observable<{
+  getRandomModelSoalInfo(getRandomDto: GetRandomDto): Observable<{
     quantity: number;
     time: string;
     timeInSecond: number;
