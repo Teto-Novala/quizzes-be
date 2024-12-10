@@ -40,7 +40,15 @@ export class AuthService {
   }
 
   registerUser(user: CreateUser): Observable<CreateUser> {
-    const { username, email, password, subject = '' } = user;
+    const {
+      username,
+      email,
+      password,
+      subject = '',
+      namaLengkap,
+      address,
+      noHp,
+    } = user;
 
     return this.hashPassword(password).pipe(
       switchMap((hashPw: string) => {
@@ -50,6 +58,9 @@ export class AuthService {
             email,
             password: hashPw,
             subject,
+            namaLengkap,
+            address,
+            noHp,
           }),
         ).pipe(
           map((user: CreateUser) => {
@@ -57,6 +68,25 @@ export class AuthService {
             return user;
           }),
         );
+      }),
+      catchError((err) => {
+        const errorMessage = err.detail;
+        const regex = /\((\w+)\)=/;
+        const match = errorMessage.match(regex);
+
+        if (match) {
+          const duplicatedField = match[1]; // "email" in this case
+          const message = `${duplicatedField} yang anda pakai sudah ada`;
+          throw new BadRequestException(message);
+        }
+
+        const matchNoHP = errorMessage.includes('Key ("noHp")');
+
+        if (matchNoHP) {
+          throw new BadRequestException('Nomor HP sudah digunakan');
+        }
+
+        throw err;
       }),
     );
   }

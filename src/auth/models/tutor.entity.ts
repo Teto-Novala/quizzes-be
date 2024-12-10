@@ -15,7 +15,7 @@ export class TutorEntity {
   @Column()
   username: string;
 
-  @Column()
+  @Column({ unique: true })
   noHp: string;
 
   @Column({ unique: true })
