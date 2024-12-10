@@ -62,7 +62,7 @@ export class SoalService {
     createDto: CreateSoal,
   ): Observable<{ message: string; soal: Soal }> {
     return from(
-      this.soalModelRepository.findOneBy({ id: createDto.model.id }),
+      this.soalModelRepository.findOneBy({ id: createDto.model }),
     ).pipe(
       switchMap((soalModel: SoalModel) => {
         const newSoal = this.soalRepository.create({

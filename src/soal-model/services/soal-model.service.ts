@@ -109,7 +109,7 @@ export class SoalModelService {
     return from(
       this.soalModelRepository.find({
         where: { author: { id: id } },
-        order: { noModel: 'ASC' },
+        order: { namaModel: 'ASC' },
       }),
     ).pipe(
       map((soalModel: SoalModel[]) => {

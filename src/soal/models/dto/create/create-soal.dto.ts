@@ -26,7 +26,7 @@ export class CreateSoal {
 
   author?: User;
 
-  model?: SoalModel;
+  model?: string;
 
   noModel?: number;
 }
