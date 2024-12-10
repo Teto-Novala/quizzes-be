@@ -57,13 +57,12 @@ export class SoalController {
   }
 
   @Post('random')
-  getRandomModelSoalInfo(
-    @Body() getRandomDto: GetRandomDto,
-  ): Observable<{
+  getRandomModelSoalInfo(@Body() getRandomDto: GetRandomDto): Observable<{
     quantity: number;
     time: string;
     timeInSecond: number;
     noModel: number;
+    subject: string;
   }> {
     return this.soalService.getRandomModelSoalInfo(getRandomDto);
   }

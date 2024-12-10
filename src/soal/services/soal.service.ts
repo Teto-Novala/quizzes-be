@@ -140,6 +140,7 @@ export class SoalService {
     time: string;
     timeInSecond: number;
     noModel: number;
+    subject: string;
   }> {
     return from(this.getRandomModel(getRandomDto.subject)).pipe(
       switchMap(({ no }: { no: number }) => {
@@ -154,6 +155,7 @@ export class SoalService {
               time: timeString,
               timeInSecond,
               noModel: no,
+              subject: getRandomDto.subject,
             };
           }),
         );
