@@ -17,6 +17,7 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CreateSoal } from '../models/dto/create/create-soal.dto';
 import { Soal } from '../models/dto/soal.dto';
 import { UpdateSoal } from '../models/dto/update/edit-soal.dto';
+import { GetRandomDto } from '../models/dto/get/random-soal/random-soal.dto';
 
 @Controller('soal')
 export class SoalController {
@@ -53,5 +54,17 @@ export class SoalController {
   @Delete('delete/:id')
   deleteSoalById(@Param('id') id: string): Observable<{ message: string }> {
     return this.soalService.deleteSoalById(id);
+  }
+
+  @Post('random')
+  getRandomModelSoalInfo(
+    @Body() getRandomDto: GetRandomDto,
+  ): Observable<{
+    quantity: number;
+    time: string;
+    timeInSecond: number;
+    noModel: number;
+  }> {
+    return this.soalService.getRandomModelSoalInfo(getRandomDto);
   }
 }

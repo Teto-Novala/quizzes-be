@@ -7,13 +7,14 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { SoalEntity } from '../models/soal.entity';
 import { Repository } from 'typeorm';
-import { catchError, from, map, Observable, switchMap } from 'rxjs';
+import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
 import { User } from 'src/auth/models/dto/user.dto';
 import { Soal } from '../models/dto/soal.dto';
 import { CreateSoal } from '../models/dto/create/create-soal.dto';
 import { SoalModelEntity } from 'src/soal-model/models/soalModel.entity';
 import { SoalModel } from 'src/soal-model/models/dto/soalModel.dto';
 import { UpdateSoal } from '../models/dto/update/edit-soal.dto';
+import { GetRandomDto } from '../models/dto/get/random-soal/random-soal.dto';
 
 @Injectable()
 export class SoalService {
@@ -109,6 +110,52 @@ export class SoalService {
       }),
       catchError((err) => {
         throw new BadRequestException('Somethnig wrong happened');
+      }),
+    );
+  }
+
+  getRandomModel(subject: string): Observable<{ no: number }> {
+    return from(
+      this.soalModelRepository.find({
+        where: { author: { subject: subject } },
+      }),
+    ).pipe(
+      switchMap((soalModel: SoalModel[]) => {
+        const modelLength = soalModel.length;
+
+        const randomIndex = Math.floor(Math.random() * modelLength) + 1;
+
+        // Mengembalikan Observable dengan nilai { no: randomIndex }
+
+        return of({ no: randomIndex });
+      }),
+    );
+  }
+
+  getRandomModelSoalInfo(
+    getRandomDto: GetRandomDto,
+  ): Observable<{
+    quantity: number;
+    time: string;
+    timeInSecond: number;
+    noModel: number;
+  }> {
+    return from(this.getRandomModel(getRandomDto.subject)).pipe(
+      switchMap(({ no }: { no: number }) => {
+        return from(this.soalRepository.find({ where: { noModel: no } })).pipe(
+          map((soal: Soal[]) => {
+            const quantity = soal.length;
+            const time = quantity * 2;
+            const timeString = `${time} menit`;
+            const timeInSecond = time * 60;
+            return {
+              quantity,
+              time: timeString,
+              timeInSecond,
+              noModel: no,
+            };
+          }),
+        );
       }),
     );
   }
