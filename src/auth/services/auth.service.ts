@@ -95,7 +95,17 @@ export class AuthService {
     return from(
       this.userRepository.findOne({
         where: { email },
-        select: ['id', 'username', 'email', 'password', 'role', 'subject'],
+        select: [
+          'id',
+          'username',
+          'email',
+          'password',
+          'role',
+          'subject',
+          'address',
+          'namaLengkap',
+          'noHp',
+        ],
       }),
     ).pipe(
       switchMap((user: User) =>
