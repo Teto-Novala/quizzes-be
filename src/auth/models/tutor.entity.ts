@@ -10,10 +10,19 @@ export class TutorEntity {
   id: string;
 
   @Column()
+  namaLengkap: string;
+
+  @Column()
   username: string;
+
+  @Column()
+  noHp: string;
 
   @Column({ unique: true })
   email: string;
+
+  @Column()
+  address: string;
 
   @Column({ select: false })
   password: string;
