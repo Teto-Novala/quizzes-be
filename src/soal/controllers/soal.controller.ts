@@ -18,6 +18,7 @@ import { CreateSoal } from '../models/dto/create/create-soal.dto';
 import { Soal } from '../models/dto/soal.dto';
 import { UpdateSoal } from '../models/dto/update/edit-soal.dto';
 import { GetRandomDto } from '../models/dto/get/random-soal/random-soal.dto';
+import { GetSoalForUser } from '../models/dto/get/soal-for-user/get-soal-for-user.dto';
 
 @Controller('soal')
 export class SoalController {
@@ -65,5 +66,13 @@ export class SoalController {
     subject: string;
   }> {
     return this.soalService.getRandomModelSoalInfo(getRandomDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('user')
+  getSoalForUser(
+    @Body() getSoalForUserDto: GetSoalForUser,
+  ): Observable<Soal[]> {
+    return this.soalService.getSoalForUser(getSoalForUserDto);
   }
 }

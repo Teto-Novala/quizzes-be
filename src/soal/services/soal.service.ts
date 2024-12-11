@@ -15,6 +15,7 @@ import { SoalModelEntity } from 'src/soal-model/models/soalModel.entity';
 import { SoalModel } from 'src/soal-model/models/dto/soalModel.dto';
 import { UpdateSoal } from '../models/dto/update/edit-soal.dto';
 import { GetRandomDto } from '../models/dto/get/random-soal/random-soal.dto';
+import { GetSoalForUser } from '../models/dto/get/soal-for-user/get-soal-for-user.dto';
 
 @Injectable()
 export class SoalService {
@@ -159,6 +160,25 @@ export class SoalService {
             };
           }),
         );
+      }),
+    );
+  }
+
+  getSoalForUser(getSoalForUserDto: GetSoalForUser): Observable<Soal[]> {
+    return from(
+      this.soalRepository.find({
+        where: {
+          noModel: getSoalForUserDto.noModel,
+          subject: getSoalForUserDto.subject,
+        },
+      }),
+    ).pipe(
+      map((soal: Soal[]) => {
+        if (soal.length > 1) {
+          return soal;
+        } else {
+          throw new BadRequestException('Soal Kosong');
+        }
       }),
     );
   }
