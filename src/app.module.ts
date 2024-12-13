@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { SoalModule } from './soal/soal.module';
 import { SoalModelModule } from './soal-model/soal-model.module';
 import { SubjectModule } from './subject/subject.module';
+import { JawabanModule } from './jawaban/jawaban.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SubjectModule } from './subject/subject.module';
     SoalModule,
     SoalModelModule,
     SubjectModule,
+    JawabanModule,
   ],
   controllers: [AppController],
   providers: [AppService],

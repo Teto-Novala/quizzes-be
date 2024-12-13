@@ -25,7 +25,11 @@ export class SoalModelService {
     createDto: CreateSoalModel,
   ): Observable<{ message: string }> {
     return from(
-      this.soalModelRepository.find({ order: { noModel: 'DESC' }, take: 1 }),
+      this.soalModelRepository.find({
+        order: { noModel: 'DESC' },
+        where: { subject: createDto.subject },
+        take: 1,
+      }),
     ).pipe(
       switchMap((lastEntries: SoalModel[]) => {
         const lastEntry = lastEntries[0];
@@ -35,6 +39,7 @@ export class SoalModelService {
         const newSoalModel = this.soalModelRepository.create({
           namaModel: createDto.namaModel,
           noModel: newNoModel,
+          subject: createDto.subject,
           author: user,
         });
 

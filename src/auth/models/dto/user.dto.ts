@@ -5,6 +5,8 @@ import { SoalModel } from 'src/soal-model/models/dto/soalModel.dto';
 export class User {
   id?: string;
 
+  namaLengkap?: string;
+
   username?: string;
 
   email?: string;

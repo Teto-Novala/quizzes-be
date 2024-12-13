@@ -17,7 +17,7 @@ export class SoalModelEntity {
   @Column()
   namaModel: string;
 
-  @Column({ type: 'int', unique: true })
+  @Column()
   noModel: number;
 
   @ManyToOne(() => TutorEntity, (tutorEntity) => tutorEntity.model)
@@ -25,4 +25,7 @@ export class SoalModelEntity {
 
   @OneToMany(() => SoalEntity, (soalEntity) => soalEntity.model)
   soal: Soal[];
+
+  @Column()
+  subject: string;
 }

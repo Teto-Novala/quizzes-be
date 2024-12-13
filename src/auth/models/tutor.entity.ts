@@ -3,6 +3,8 @@ import { Role } from './enums/role.enum';
 import { SoalEntity } from 'src/soal/models/soal.entity';
 import { SoalModelEntity } from 'src/soal-model/models/soalModel.entity';
 import { SoalModel } from 'src/soal-model/models/dto/soalModel.dto';
+import { JawabanEntity } from 'src/jawaban/models/jawaban.entity';
+import { Jawaban } from 'src/jawaban/models/dto/jawaban.dto';
 
 @Entity('user')
 export class TutorEntity {
@@ -38,4 +40,7 @@ export class TutorEntity {
 
   @OneToMany(() => SoalModelEntity, (soalModelEntity) => soalModelEntity.author)
   model: SoalModel[];
+
+  @OneToMany(() => JawabanEntity, (jawabanEntity) => jawabanEntity.author)
+  jawaban: Jawaban[];
 }

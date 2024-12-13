@@ -145,8 +145,15 @@ export class SoalService {
   }> {
     return from(this.getRandomModel(getRandomDto.subject)).pipe(
       switchMap(({ no }: { no: number }) => {
-        return from(this.soalRepository.find({ where: { noModel: no } })).pipe(
+        return from(
+          this.soalRepository.find({
+            where: { noModel: no, subject: getRandomDto.subject },
+          }),
+        ).pipe(
           map((soal: Soal[]) => {
+            if (soal.length === 0) {
+              throw new BadRequestException('Soal belum ada');
+            }
             const quantity = soal.length;
             const time = quantity * 2;
             const timeString = `${time} menit`;
@@ -171,10 +178,20 @@ export class SoalService {
           noModel: getSoalForUserDto.noModel,
           subject: getSoalForUserDto.subject,
         },
+        select: [
+          'id',
+          'soal',
+          'subject',
+          'pilihanA',
+          'pilihanB',
+          'pilihanC',
+          'pilihanD',
+          'noModel',
+        ],
       }),
     ).pipe(
       map((soal: Soal[]) => {
-        if (soal.length > 1) {
+        if (soal.length > 0) {
           return soal;
         } else {
           throw new BadRequestException('Soal Kosong');
