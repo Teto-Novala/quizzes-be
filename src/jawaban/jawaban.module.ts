@@ -9,5 +9,6 @@ import { SoalEntity } from 'src/soal/models/soal.entity';
   imports: [TypeOrmModule.forFeature([JawabanEntity, SoalEntity])],
   controllers: [JawabanController],
   providers: [JawabanService],
+  exports: [JawabanService],
 })
 export class JawabanModule {}

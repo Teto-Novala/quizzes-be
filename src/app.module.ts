@@ -8,6 +8,8 @@ import { SoalModule } from './soal/soal.module';
 import { SoalModelModule } from './soal-model/soal-model.module';
 import { SubjectModule } from './subject/subject.module';
 import { JawabanModule } from './jawaban/jawaban.module';
+import { ReportModule } from './report/report.module';
+import { PrinterModule } from './printer/printer.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { JawabanModule } from './jawaban/jawaban.module';
     SoalModelModule,
     SubjectModule,
     JawabanModule,
+    ReportModule,
+    PrinterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
